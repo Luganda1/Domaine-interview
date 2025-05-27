@@ -637,39 +637,64 @@
   </div>
 {%- endif -%}
 
-{% comment %} // PDP Swatch functionlity  {% endcomment %}
+{% comment %} // PDP Swatch functionlity {% endcomment %}
 {%- if card_product.variants_count > 1 -%}
-  <script>
+<script>
   document.addEventListener('DOMContentLoaded', () => {
     // Listen for events on any select input with class 'variant-picker' inside a card
     document.querySelectorAll('.card_product-swatch-form').forEach(form => {
       form.querySelectorAll('legend.form__label').forEach(legend => {
-      legend.style.display = 'none';
-    });
+        legend.style.display = 'none';
+      });
 
-    document.querySelectorAll('.card__content').forEach(e=>{let c=e.querySelector('.caption-with-letter-spacing'),t=e.querySelector('.card__heading'),p=e.querySelector('.price'),s=e.querySelector('.price--on-sale');c&&(c.style.fontWeight='500',c.style.textTransform='capitalize',c.style.fontSize='16px',c.style.color='#111111');p&&(p.style.fontWeight='500',p.style.fontSize='16px',p.style.color='#000');s&&(s.style.color='#ff0000');t&&(t.style.fontWeight='600',t.style.fontSize='18px',t.style.color='#0a4874')});
+      document.querySelectorAll('.card__content').forEach(e => { let c = e.querySelector('.caption-with-letter-spacing'), t = e.querySelector('.card__heading'), p = e.querySelector('.price'), s = e.querySelector('.price--on-sale'); c && (c.style.fontWeight = '500', c.style.textTransform = 'capitalize', c.style.fontSize = '16px', c.style.color = '#111111'); p && (p.style.fontWeight = '500', p.style.fontSize = '16px', p.style.color = '#000'); s && (s.style.color = '#ff0000'); t && (t.style.fontWeight = '600', t.style.fontSize = '18px', t.style.color = '#0a4874') });
 
-    form.addEventListener('click', (event) => {
-      const product = {{ card_product |  json }}
-      let selectedColor = event.target.value;
-      let featuredImageSrc = product.variants.find(variant => variant.option1 === selectedColor)?.featured_image.src;
-      featuredImageSrc = featuredImageSrc.split(" ")[0]
+      form.addEventListener('click', (event) => {
+        const product = {{ card_product | json }}
 
-      if (featuredImageSrc) {
-          // Traverse to parent card
+        let selectedColor = event.target.value;
+        let featuredImageSrc = product.variants.find(variant => variant.option1 === selectedColor)?.featured_image.src;
+        featuredImageSrc = featuredImageSrc.split(" ")[0]
+        const targetColor = selectedColor.toLowerCase();
+
+        // Look through the media array for a matching alt or src filename
+        const matchedMedia = product.media.find(media => {
+          if (media.alt && media.alt.toLowerCase() === targetColor) {
+            return media.src;
+          }
+          return false
+        });
+
+        const secondaryImageSrc = matchedMedia.src.split(" ")[0]
+
+        if (featuredImageSrc) {
           const card = form.closest('.card');
-
           // Find the image inside card__inner within that card
           const productImage = card.querySelector('.card__inner img');
 
-          // Update the image src
           if (productImage) {
             productImage.src = featuredImageSrc;
             productImage.srcset = `${featuredImageSrc} 533w`;
           }
+
+          // Remove existing listeners to avoid stacking events
+          productImage.onmouseenter = null;
+          productImage.onmouseleave = null;
+
+          // Add hover effect
+          productImage.addEventListener('mouseenter', () => {
+            productImage.src = secondaryImageSrc;
+            productImage.srcset = `${secondaryImageSrc} 533w`;
+          });
+
+          productImage.addEventListener('mouseleave', () => {
+            productImage.src = featuredImageSrc;
+            productImage.srcset = `${featuredImageSrc} 533w`;
+          });
+
         }
     });
   });
   });
-    </script>
+</script>
 {%- endif -%}
