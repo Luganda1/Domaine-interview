@@ -6,5 +6,4 @@ mix.js('src/js/app.js', 'assets')
     ])
     .options({
         processCssUrls: false,
-    })
-    ;
+    });

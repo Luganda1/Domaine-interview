@@ -647,6 +647,8 @@
       legend.style.display = 'none';
     });
 
+    document.querySelectorAll('.card__content').forEach(e=>{let c=e.querySelector('.caption-with-letter-spacing'),t=e.querySelector('.card__heading'),p=e.querySelector('.price'),s=e.querySelector('.price--on-sale');c&&(c.style.fontWeight='500',c.style.textTransform='capitalize',c.style.fontSize='16px',c.style.color='#111111');p&&(p.style.fontWeight='500',p.style.fontSize='16px',p.style.color='#000');s&&(s.style.color='#ff0000');t&&(t.style.fontWeight='600',t.style.fontSize='18px',t.style.color='#0a4874')});
+
     form.addEventListener('click', (event) => {
       const product = {{ card_product |  json }}
       let selectedColor = event.target.value;

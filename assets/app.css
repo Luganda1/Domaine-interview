@@ -11,10 +11,7 @@
     --color-gray-500: oklch(55.1% 0.027 264.364);
     --color-white: #fff;
     --spacing: 0.25rem;
-    --text-2xl: 1.5rem;
-    --text-2xl--line-height: calc(2 / 1.5);
     --font-weight-semibold: 600;
-    --font-weight-bold: 700;
     --radius-xl: 0.75rem;
     --default-transition-duration: 150ms;
     --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -275,26 +272,9 @@
   .pb-5 {
     padding-bottom: calc(var(--spacing) * 5);
   }
-  .text-2xl {
-    font-size: var(--text-2xl);
-    line-height: var(--tw-leading, var(--text-2xl--line-height));
-  }
-  .font-bold {
-    --tw-font-weight: var(--font-weight-bold);
-    font-weight: var(--font-weight-bold);
-  }
   .font-semibold {
     --tw-font-weight: var(--font-weight-semibold);
     font-weight: var(--font-weight-semibold);
-  }
-  .text-\[\#0a4874\] {
-    color: #0a4874;
-  }
-  .text-\[\#740a0a\] {
-    color: #740a0a;
-  }
-  .text-\[\#e53434\] {
-    color: #e53434;
   }
   .text-red-600 {
     color: var(--color-red-600);
