@@ -14,6 +14,7 @@
 
 **ADDITIONAL TOOLS ADDED:
  - laravel mix (compile ES6 js ): https://laravel-mix.com/docs/6.0/installation
+ https://tailwindcss.com/docs/installation/framework-guides/laravel/mix
  - Tailwind CSS: https://tailwindcss.com/docs/installation/tailwind-cli
 
 
