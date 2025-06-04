@@ -172,13 +172,13 @@
               class="full-unstyled-link"
               aria-labelledby="CardLink-{{ section_id }}-{{ card_product.id }} Badge-{{ section_id }}-{{ card_product.id }}"
             >
-              {{ card_product.title | escape }}
+              <span class="font-bold text-[#0a4874] tracking-normal text-[18px] py-[3px]"> {{ card_product.title | escape }}</span>
             </a>
           </h3>
           <div class="card-information">
             {%- if show_vendor -%}
               <span class="visually-hidden">{{ 'accessibility.vendor' | t }}</span>
-              <div class="caption-with-letter-spacing light">{{ card_product.vendor }}</div>
+              <div class="caption-with-letter-spacing "> <span class="font-medium text-[18px] capitalize py-[3px] tracking-normal text-gray-800">{{ card_product.vendor }}</span></div>
             {%- endif -%}
 
             <span class="caption-large light">{{ block.settings.description | escape }}</span>
@@ -638,7 +638,6 @@
 {%- endif -%}
 
 {% comment %} // PDP Swatch functionlity {% endcomment %}
-{%- if card_product.variants_count > 1 -%}
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     // Listen for events on any select input with class 'variant-picker' inside a card
@@ -647,15 +646,21 @@
         legend.style.display = 'none';
       });
 
-      document.querySelectorAll('.card__content').forEach(e => { let c = e.querySelector('.caption-with-letter-spacing'), t = e.querySelector('.card__heading'), p = e.querySelector('.price'), s = e.querySelector('.price--on-sale'); c && (c.style.fontWeight = '500', c.style.textTransform = 'capitalize', c.style.fontSize = '16px', c.style.color = '#111111'); p && (p.style.fontWeight = '500', p.style.fontSize = '16px', p.style.color = '#000'); s && (s.style.color = '#ff0000'); t && (t.style.fontWeight = '600', t.style.fontSize = '18px', t.style.color = '#0a4874') });
+      document.querySelectorAll('.card__content').forEach(el => {
+      const caption = el.querySelector('.caption-with-letter-spacing');
+      const heading = el.querySelector('.card__heading');
+      if (caption && heading) {
+        heading.parentNode.insertBefore(caption, heading);
+      }
+      });
 
       form.addEventListener('click', (event) => {
         const product = {{ card_product | json }}
 
         let selectedColor = event.target.value;
-        let featuredImageSrc = product.variants.find(variant => variant.option1 === selectedColor)?.featured_image.src;
-        featuredImageSrc = featuredImageSrc.split(" ")[0]
-        const targetColor = selectedColor.toLowerCase();
+        let featuredImageSrc = product?.variants?.find(variant => variant.option1 === selectedColor)?.featured_image.src;
+        featuredImageSrc = featuredImageSrc
+        const targetColor = selectedColor?.toLowerCase();
 
         // Look through the media array for a matching alt or src filename
         const matchedMedia = product.media.find(media => {
@@ -664,8 +669,7 @@
           }
           return false
         });
-
-        const secondaryImageSrc = matchedMedia.src.split(" ")[0]
+        const secondaryImageSrc = matchedMedia != undefined && matchedMedia?.src
 
         if (featuredImageSrc) {
           const card = form.closest('.card');
@@ -677,24 +681,25 @@
             productImage.srcset = `${featuredImageSrc} 533w`;
           }
 
-          // Remove existing listeners to avoid stacking events
-          productImage.onmouseenter = null;
-          productImage.onmouseleave = null;
+          if (productImage && secondaryImageSrc) {
+            // Clear existing listeners if any
+            productImage.onmouseenter = null;
+            productImage.onmouseleave = null;
 
-          // Add hover effect
-          productImage.addEventListener('mouseenter', () => {
-            productImage.src = secondaryImageSrc;
-            productImage.srcset = `${secondaryImageSrc} 533w`;
-          });
+            // Add hover effect safely
+            productImage.addEventListener('mouseenter', () => {
+              productImage.src = secondaryImageSrc;
+              productImage.srcset = `${secondaryImageSrc} 533w`;
+            });
 
-          productImage.addEventListener('mouseleave', () => {
-            productImage.src = featuredImageSrc;
-            productImage.srcset = `${featuredImageSrc} 533w`;
-          });
+            productImage.addEventListener('mouseleave', () => {
+              productImage.src = featuredImageSrc;
+              productImage.srcset = `${featuredImageSrc} 533w`;
+            });
+          } 
 
         }
     });
   });
   });
 </script>
-{%- endif -%}
